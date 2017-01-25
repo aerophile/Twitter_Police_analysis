@@ -13,7 +13,17 @@ def calculate_tweet_frequency(tweet_list):
 
 	avg_tweets_perday = avg_tweets_persecond * 60 * 60 * 24
 
-	print avg_tweets_perday
+	return avg_tweets_perday
+
+def calculate_popular_hashtags(tweet_list):
+	"returns the ten most popular hastags as a list/dictionary"
+	hashtags_list = []
+	for tweet in tweet_list:
+		for hashtag in tweet.entities["hashtags"]:
+			hashtags_list.append(hashtag["text"])
+		
+
+	print hashtags_list
 
 
 

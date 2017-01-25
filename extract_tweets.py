@@ -31,5 +31,5 @@ def print_tweet_text(tweet_list):
 
 obtain_tweets()
 #print_tweet_text(tweet_collection)
-process_tweets.calculate_tweet_frequency(tweet_collection)
+print process_tweets.calculate_popular_hashtags(tweet_collection)
 		
