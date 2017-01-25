@@ -1,5 +1,6 @@
 import tweepy
 import parameters
+import process_tweets
 
 auth = tweepy.OAuthHandler(parameters.consumer_key, parameters.consumer_secret)
 auth.set_access_token(parameters.access_token, parameters.access_token_secret)
@@ -26,11 +27,9 @@ def print_tweet_text(tweet_list):
 		print str(i)+" ",tweet.text
 		i += 1
 
-def process_tweets(tweet_list):
-	tweet_frequency = calculate_tweet_frequency(tweet_list)
 
 
 obtain_tweets()
-print_tweet_text(tweet_collection)
-
+#print_tweet_text(tweet_collection)
+process_tweets.calculate_tweet_frequency(tweet_collection)
 		
