@@ -1,3 +1,4 @@
+import collections
 
 def calculate_tweet_frequency(tweet_list):
 	
@@ -16,14 +17,16 @@ def calculate_tweet_frequency(tweet_list):
 	return avg_tweets_perday
 
 def calculate_popular_hashtags(tweet_list):
-	"returns the ten most popular hastags as a list/dictionary"
+	"returns the ten most popular hastags as a list of tupples with each tupple containing the zeroth index as hashtag and first index as occurance frequency"
 	hashtags_list = []
 	for tweet in tweet_list:
 		for hashtag in tweet.entities["hashtags"]:
 			hashtags_list.append(hashtag["text"])
 		
 
-	print hashtags_list
+	popular_hashtags_dictionary = collections.Counter(hashtags_list)
+	popular_hashtags = popular_hashtags_dictionary.most_common(10)
+	print popular_hashtags
 
 
 
