@@ -11,20 +11,20 @@ tweet_collection = []
 
 def obtain_tweets():
 	"downloads tweets and removes retweets till required number of tweets are collected"
-	downloaded_tweets = api.user_timeline(screen_name="BlrCityPolice",count = 200,include_rts=False)
+	downloaded_tweets = api.user_timeline(screen_name="DelhiPolice",count = 200,include_rts=False)
 	max_id_value = downloaded_tweets[-1].id
 
 	while (len(tweet_collection) < parameters.tweets_quantity):
 		
 		tweet_collection.extend(downloaded_tweets)
-		downloaded_tweets = api.user_timeline(screen_name="BlrCityPolice",count = 200, max_id = max_id_value, include_rts=False)
+		downloaded_tweets = api.user_timeline(screen_name="DelhiPolice",count = 200, max_id = max_id_value, include_rts=False)
 		max_id_value = downloaded_tweets[-1].id
 		
 
 def print_tweet_text(tweet_list):
 	i = 1
 	for tweet in tweet_list:
-		print str(i)+" ",tweet.text
+		print str(i)+" ",(tweet.text).encode('utf-8')
 		i += 1
 
 

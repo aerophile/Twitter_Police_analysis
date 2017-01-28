@@ -23,13 +23,33 @@ def calculate_popular_hashtags(tweet_list):
 		for hashtag in tweet.entities["hashtags"]:
 			hashtags_list.append(hashtag["text"])
 		
-
 	popular_hashtags_dictionary = collections.Counter(hashtags_list)
 	popular_hashtags = popular_hashtags_dictionary.most_common(10)
 	print popular_hashtags
 
 
 
+def determine_photos(tweet_list):
+	image_only = 0
+	text_only = 0
+	imag_and_text = 0
+	for tweet in tweet_list:
+		try:
+			if tweet.entities["media"][0]["type"] == "photo" :
+				if tweet.text[0:13] == 'https://t.co/' and len(tweet.text) == 23: 
+					#Image only condition
+					# Only picture tweets have the text as image link of lenth 23
+					image_only += 1
+				else:
+					# Likely to be image and text
+					imag_and_text += 1
+			
+		except:
+			text_only += 1
+	
+	print "image only ", image_only
+	print "text only" , text_only
+	print "image and text", imag_and_text
 
 
 def process_tweets(tweet_list):
