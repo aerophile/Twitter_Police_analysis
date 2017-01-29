@@ -6,4 +6,4 @@ handles = ['DelhiPolice','MumbaiPolice','BlrCityPolice','hydcitypolice','kolkata
 
 #number of tweets to obtain
 
-tweets_quantity = 350 
+tweets_quantity = 300

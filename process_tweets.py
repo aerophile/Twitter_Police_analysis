@@ -1,4 +1,5 @@
 import collections
+import sentiment_analysis
 
 def calculate_tweet_frequency(tweet_list):
 	
@@ -25,14 +26,18 @@ def calculate_popular_hashtags(tweet_list):
 		
 	popular_hashtags_dictionary = collections.Counter(hashtags_list)
 	popular_hashtags = popular_hashtags_dictionary.most_common(10)
-	print popular_hashtags
+	#print popular_hashtags
+	return popular_hashtags
 
 
 
-def determine_photos(tweet_list):
+def determine_post_type(tweet_list):
+	"returns a list containing counts of post having images only/text only/both"
 	image_only = 0
 	text_only = 0
-	imag_and_text = 0
+	image_and_text = 0
+	likes = [0,0,0]
+	retweets = [0,0,0]
 	for tweet in tweet_list:
 		try:
 			if tweet.entities["media"][0]["type"] == "photo" :
@@ -40,17 +45,28 @@ def determine_photos(tweet_list):
 					#Image only condition
 					# Only picture tweets have the text as image link of lenth 23
 					image_only += 1
+					likes[0] += tweet.favorite_count
+					retweets[0] += tweet.retweet_count
 				else:
 					# Likely to be image and text
-					imag_and_text += 1
+					image_and_text += 1
+					likes[2] += tweet.favorite_count
+					retweets[2] += tweet.retweet_count
 			
 		except:
 			text_only += 1
+			likes[1] += tweet.favorite_count
+			retweets[1] += tweet.retweet_count
 	
-	print "image only ", image_only
-	print "text only" , text_only
-	print "image and text", imag_and_text
+	return_object = {"image_only":[image_only,likes[0],retweets[0]],
+					"text_only":[text_only,likes[1],retweets[1]],
+					"images_and_text":[image_and_text,likes[2],retweets[2]]
+					}
+	return return_object
 
 
 def process_tweets(tweet_list):
 	tweet_frequency = calculate_tweet_frequency(tweet_list)
+	popular_hashtags = calculate_popular_hashtags(tweet_list)
+	post_type_count = determine_post_type(tweet_list)
+	
