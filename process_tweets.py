@@ -1,5 +1,6 @@
 import collections
-import sentiment_analysis
+import sentiment_analysis_afinn
+import mongodb_functions
 
 def calculate_tweet_frequency(tweet_list):
 	
@@ -32,7 +33,7 @@ def calculate_popular_hashtags(tweet_list):
 
 
 def determine_post_type(tweet_list):
-	"returns a list containing counts of post having images only/text only/both"
+	"returns engagement stats for posts having images only/text only/both"
 	image_only = 0
 	text_only = 0
 	image_and_text = 0
@@ -61,12 +62,17 @@ def determine_post_type(tweet_list):
 	return_object = {"image_only":[image_only,likes[0],retweets[0]],
 					"text_only":[text_only,likes[1],retweets[1]],
 					"images_and_text":[image_and_text,likes[2],retweets[2]]
-					}
+					}					
 	return return_object
 
 
-def process_tweets(tweet_list):
+def process_tweets(tweet_list,screen_name):
 	tweet_frequency = calculate_tweet_frequency(tweet_list)
 	popular_hashtags = calculate_popular_hashtags(tweet_list)
 	post_type_count = determine_post_type(tweet_list)
+	sentiment_result_list = sentiment_analysis_afinn.get_sentiments(tweet_list)
+	try:
+		mongodb_functions.insert_tweet("police_analysis",screen_name,tweet_list)
+	except:
+		print "mongodb_error"
 	
