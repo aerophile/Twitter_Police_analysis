@@ -9,10 +9,10 @@ api = tweepy.API(auth)
 
 tweet_collection = []
 
-def obtain_tweets():
+def obtain_tweets(handle):
 	"downloads tweets and removes retweets till required number of tweets are collected"
 	reached_end = False
-	downloaded_tweets = api.user_timeline(screen_name="DelhiPolice",count = 200,include_rts=False)
+	downloaded_tweets = api.user_timeline(screen_name=handle,count = 200,include_rts=False)
 	max_id_value = downloaded_tweets[-1].id
 	downloaded_tweets = remove_replys(downloaded_tweets)
 
@@ -20,11 +20,13 @@ def obtain_tweets():
 		
 		tweet_collection.extend(downloaded_tweets)
 		try:
-			downloaded_tweets = api.user_timeline(screen_name="DelhiPolice",count = 200, max_id = max_id_value, include_rts=False)
+			downloaded_tweets = api.user_timeline(screen_name=handle,count = 200, max_id = max_id_value, include_rts=False)
 			max_id_value = downloaded_tweets[-1].id
 			downloaded_tweets = remove_replys(downloaded_tweets)
 		except:
 			reached_end = True
+
+	return tweet_collection
 
 def print_tweet_text(tweet_list):
 	i = 1
@@ -40,7 +42,7 @@ def remove_replys(tweet_list):
 			new_tweet_list.append(tweet)
 	return new_tweet_list
 
-obtain_tweets()
-print_tweet_text(tweet_collection)
-print process_tweets.determine_post_type(tweet_collection)
+#obtain_tweets()
+#print_tweet_text(tweet_collection)
+#print process_tweets.determine_post_type(tweet_collection)
 		

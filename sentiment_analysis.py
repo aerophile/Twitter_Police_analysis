@@ -2,7 +2,7 @@ import requests
 
 
 def get_sentiments(tweet_list):
-	
+	"returns list of sentiment values corresponding to tweet list"
 	payload = []
 	for tweet in tweet_list:
 		insert_dict = {"text":tweet.text,"id":tweet.id}

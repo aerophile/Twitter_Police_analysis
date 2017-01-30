@@ -66,7 +66,7 @@ def determine_post_type(tweet_list):
 	return return_object
 
 
-def process_tweets(tweet_list,screen_name):
+def process_tweets_function(tweet_list,screen_name):
 	tweet_frequency = calculate_tweet_frequency(tweet_list)
 	popular_hashtags = calculate_popular_hashtags(tweet_list)
 	post_type_count = determine_post_type(tweet_list)
@@ -75,4 +75,11 @@ def process_tweets(tweet_list,screen_name):
 		mongodb_functions.insert_tweet("police_analysis",screen_name,tweet_list)
 	except:
 		print "mongodb_error"
+
+	return_obj = {"tweet_frequency": tweet_frequency,
+					"popular_hastags": popular_hashtags,
+					"post_type_count": determine_post_type,
+					" sentiment_result_list" : sentiment_result_list}
+	return return_obj
+
 	
