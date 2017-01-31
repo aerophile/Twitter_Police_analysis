@@ -3,8 +3,9 @@ import sentiment_analysis_afinn
 import mongodb_functions
 
 def calculate_tweet_frequency(tweet_list):
-	
+	"returns a tweet frequency and list of frequencies based on calculations from all obtained tweets"
 	time_differences = []
+	tweet_frequency_list=[]
 	for i in range(0,len(tweet_list)-1):
 		timedelta_seconds = (tweet_list[i].created_at - tweet_list[i+1].created_at).total_seconds()
 		time_differences.append( timedelta_seconds )
@@ -16,7 +17,16 @@ def calculate_tweet_frequency(tweet_list):
 
 	avg_tweets_perday = avg_tweets_persecond * 60 * 60 * 24
 
-	return avg_tweets_perday
+	for time_difference  in time_differences:
+		try:
+			freq = round(((1/time_difference)* 60 * 60 * 24),2)
+			tweet_frequency_list.append(freq)
+		except:
+			continue
+
+	avg_tweets_perday = round(avg_tweets_perday,2)
+
+	return avg_tweets_perday,tweet_frequency_list
 
 def calculate_popular_hashtags(tweet_list):
 	"returns the ten most popular hastags as a list of tupples with each tupple containing the zeroth index as hashtag and first index as occurance frequency"
@@ -59,15 +69,15 @@ def determine_post_type(tweet_list):
 			likes[1] += tweet.favorite_count
 			retweets[1] += tweet.retweet_count
 	
-	return_object = {"image_only":[image_only,likes[0],retweets[0]],
-					"text_only":[text_only,likes[1],retweets[1]],
-					"images_and_text":[image_and_text,likes[2],retweets[2]]
-					}					
-	return return_object
+	return_list = [{"image_only":[image_only,int(likes[0]),int(retweets[0])," Image only Posts"]},
+					{"text_only":[text_only,int(likes[1]),int(retweets[1]),"Text posts"]},
+					{"images_and_text":[image_and_text,int(likes[2]),int(retweets[2]),"Image and Text Posts"]}
+					]					
+	return return_list
 
 
 def process_tweets_function(tweet_list,screen_name):
-	tweet_frequency = calculate_tweet_frequency(tweet_list)
+	tweet_frequency,tweet_frequency_list = calculate_tweet_frequency(tweet_list)
 	popular_hashtags = calculate_popular_hashtags(tweet_list)
 	post_type_count = determine_post_type(tweet_list)
 	sentiment_result_list = sentiment_analysis_afinn.get_sentiments(tweet_list)
@@ -76,9 +86,9 @@ def process_tweets_function(tweet_list,screen_name):
 	except:
 		print "mongodb_error"
 
-	return_obj = {"tweet_frequency": tweet_frequency,
+	return_obj = {"tweet_frequency": [tweet_frequency,tweet_frequency_list,len(tweet_frequency_list)],
 					"popular_hastags": popular_hashtags,
-					"post_type_count": determine_post_type,
+					"post_type_count": post_type_count,
 					" sentiment_result_list" : sentiment_result_list}
 	return return_obj
 

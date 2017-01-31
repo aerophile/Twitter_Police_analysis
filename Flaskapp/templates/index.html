@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<style type="text/css">
+	.top-buffer { margin-top:5px; }
+	.progress{
+    height: 35px;}
+</style>
+</head>
+
+<body>
+	<script src="{{ url_for('static',filename='Chart.min.js') }}"></script>
+<nav class="navbar navbar-default inverse navbar-static-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+     
+      <a class="navbar-brand" href="/"></span>Police Twitter Analysis</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="Bangalore">Bangalore Police <span class="sr-only"></a></li>
+        <li><a href="Mumbai">Mumbai Police <span class="sr-only"></a></li>
+        <li><a href="Delhi">Delhi Police <span class="sr-only"></a></li> 
+        <li><a href="Kolkatta">kolkatta Police <span class="sr-only"></a></li>
+        <li><a href="Hyderabad">Hyderbad Police <span class="sr-only"></a></li>        
+     
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">About</a></li>
+        
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div>
+  <!-- /.container-fluid -->
+</nav>
+
+<div class="jumbotron">
+ <div class="container center-block">
+	<h1><span class = "glyphicon glyphicon-flash"></span>Police Twitter Analysis</h1>
+	<p>An insight into the twitter accounts of our police forces based in different towns and cities of India.</p>
+	</div>
+</div>
+
+<div class="container">
+
+	<a href="{{acc_link}}"><h1> {{city}} Police<h1></h1></a>
+	<h2> {{city}} Police posts on average <b><span class="label label-default">{{result["tweet_frequency"][0]}}</span></b> Tweets a Day</h2>
+</div>
+<div class="container">
+		<h2> Some of the Popular Hashtags used by them are 
+		<b><span>#{{result['popular_hastags'][0][0]}}</span>, </b>
+		<b><span># {{result['popular_hastags'][1][0]}}</span>, </b><br>
+		<b><span># {{result['popular_hastags'][2][0]}}</span>, </b>
+		<b><span># {{result['popular_hastags'][3][0]}}</span>, </b>
+		<b><span># {{result['popular_hastags'][4][0]}}</span>, </b>
+		<b><span># {{result['popular_hastags'][5][0]}}, </span></b>
+		<b><span># {{result['popular_hastags'][6][0]}}</span>, </b>
+		<b><span># {{result['popular_hastags'][7][0]}}</span>, </b>
+		<b><span># {{result['popular_hastags'][8][0]}}</span>, </b>
+		<b><span># {{result['popular_hastags'][9][0]}},</span></b>
+		and they appear a total of <b<span class="label label-default">{{
+		result['popular_hastags'][9][1] + result['popular_hastags'][8][1] + result['popular_hastags'][7][1]+
+		result['popular_hastags'][6][1] + result['popular_hastags'][5][1] + result['popular_hastags'][4][1]+
+		result['popular_hastags'][3][1] + result['popular_hastags'][2][1] + result['popular_hastags'][1][1]+
+		result['popular_hastags'][0][1] 		
+				}}</span></b> times.
+		</h2>
+</div>
+<div class="container">
+		<h2> They have
+		<span class="label label-default">{{result['post_type_count'][1]['text_only'][0]}}</span><b> Text Posts</b>,
+		<span class="label label-default">{{result['post_type_count'][2]['images_and_text'][0]}}</span><b> Image and Text posts</b>
+		and <span class="label label-default">{{result['post_type_count'][0]['image_only'][0]}}</span><b> Image only Posts</b>.
+		</h2>
+</div>
+</div>
+<div class="container"><h2>
+		The most engaging posts are <b>{{max_type[3]}}</b> which have
+		<span class="label label-default"><b>{{max_type[1]}}</b></span> Likes and <span class="label label-default"><b>{{max_type[2]}}</b></span> Retweets.
+		
+	</h2>
+</div>		  	
+<div class="container">
+	<h2> The <b>sentiments</b> of the their tweets are distributed as <br><br>
+	<div class="container">
+	<div class="progress">
+  <div class="progress-bar progress-bar-success" style="width: {{result[' sentiment_result_list'][1]}}%"><b>{{result[' sentiment_result_list'][1]}}% Positive</b>
+
+  </div>
+
+ 
+  <div class=" progress-bar progress-bar-warning progress-bar-striped" style="width: {{result[' sentiment_result_list'][2]}}%"><b> {{result[' sentiment_result_list'][2]}}% Neutral</b>
+    
+  </div>
+  <div class="progress-bar progress-bar-danger" style="width: {{result[' sentiment_result_list'][0]}}%"> <b>{{result[' sentiment_result_list'][0]}}% Negative</b>
+    
+  </div>
+	</div>
+	</div></h2>
+</div>
+
+<div class='container'>
+	<div class='container'>
+	<div class="row"><h2>Graphs</h2></div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+		<h3>Popular Hastags</h3>
+			<canvas id="BarChart" width="300" height="250"></canvas>
+
+
+		</div>
+		<div class="col-md-6">
+		<h3>Post Type and Engagement</h3>
+			<canvas id="BarChart2" width="300" height="250"></canvas>
+
+		</div>
+	</div>
+
+	<div class="row">
+		
+		<div class="col-md-6">
+		<h3>Frequency Graph</h3>
+			<canvas id="Linechart" width="300" height="250"></canvas>
+		</div>
+		<div class="col-md-6">
+		<h3>Sentiment Analysis Donut</h3>
+		<canvas id="dochart" width="300" height="250"></canvas>
+		</div>
+	</div>
+</div>
+
+
+<script>
+var ctx = document.getElementById("BarChart");
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels : [{% for item in labels %}
+                  "{{item}}",
+              {% endfor %}],
+        datasets: [{
+            label: '# of times a Hash tag appears',
+            data : [{% for item in values %}
+                      {{item}},
+                    {% endfor %}],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(245, 99, 132, 0.2)',
+                'rgba(34, 152, 215, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(245, 99, 132, 1)',
+                'rgba(34, 152, 215, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(153, 102, 255, 1)',
+               
+
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+</script>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+			  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+			  crossorigin="anonymous"></script>
+
+
+<script>
+var ctx = document.getElementById("BarChart2");
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels : [{% for item in labels1 %}
+                  "{{item}}",
+              {% endfor %}],
+        datasets: [{
+            label:[ 'Engagement stats'],
+            data : [{% for item in values1 %}
+                      {{item}},
+                    {% endfor %}],
+            backgroundColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+
+                
+            ],
+            
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+</script>
+
+<script>
+ var ctx2 = document.getElementById("Linechart");
+var myLineChart = new Chart(ctx2, {
+    type: 'line',
+    data : {
+    labels: {{linechart_x}},
+    datasets: [
+        {
+            label: "Frequency of tweets",
+            lineTension: 0.1,
+            backgroundColor: "rgba(75,192,192,0.4)",
+            borderColor: "rgba(75,192,192,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(75,192,192,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: {{result['tweet_frequency'][1]}},
+            spanGaps: false,
+        }
+    ]
+},
+
+options: {
+        scales: {
+            xAxes: [{
+                display: false
+            }]
+        }
+    }
+    
+});
+ 
+ 
+</script>
+
+<script>
+var ctx4 = document.getElementById("dochart");
+var myDoughnutChart = new Chart(ctx4, {
+    type: 'doughnut',
+    data: {
+    labels: [
+        "Negative",
+        "Positive",
+        "Neutral"
+    ],
+    datasets: [
+        {
+            data: {{result[' sentiment_result_list']}},
+            backgroundColor: [
+                "#FF6384",
+                "#36A2EB",
+                "#FFCE56"
+            ],
+            hoverBackgroundColor: [
+                "#FF6384",
+                "#36A2EB",
+                "#FFCE56"
+            ]
+        }]
+},
+    
+});
+</script>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+			  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+			  crossorigin="anonymous"></script>
+	<script src="{{ url_for('static',filename='bootstrap.min.js') }}"></script>
+
+
+
+
+	
+</body>
+
+</html>
