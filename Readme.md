@@ -13,3 +13,6 @@
 
 [click here](http://104.236.170.251)
  
+## To enable tweet Backups to Mongodb
+
+To enable saving tweets to Mongodb, mong db should be installed. I have tested this functionality by insatlling mongodb according to these [instructions](https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-16-04).
