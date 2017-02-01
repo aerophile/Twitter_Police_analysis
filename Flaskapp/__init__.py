@@ -17,7 +17,7 @@ def worker():
 @app.route('/')
 @app.route('/Bangalore')
 def ban():
-	city_page = "Bangalore"
+	city_page = 'Bangalore'	
 	result = results[city_page]
 	
 	labels = [result['popular_hastags'][0][0],result['popular_hastags'][1][0],result['popular_hastags'][2][0],
@@ -52,7 +52,7 @@ def ban():
 
 @app.route('/Mumbai')
 def mum():
-	city_page = "Mumbai"
+	city_page = 'Mumbai'	
 	result = results[city_page]
 	
 	labels = [result['popular_hastags'][0][0],result['popular_hastags'][1][0],result['popular_hastags'][2][0],
@@ -84,6 +84,7 @@ def mum():
 		return render_template("index.html",city=city_page,result = result,acc_link=acc_link,max_type = max_type, values=values, labels=labels,linechart_x=linechart_x, values1=values1, labels1=labels1)
 	except Exception, e:
 		return str(e)
+	
 
 @app.route('/Delhi')
 def delhi():
@@ -120,9 +121,9 @@ def delhi():
 	except Exception, e:
 		return str(e)		
 
-@app.route('/Kolkatta')
+@app.route('/Kolkata')
 def kol():
-	city_page = "Kolkatta"
+	city_page = "Kolkata"
 	result = results[city_page]
 	
 	labels = [result['popular_hastags'][0][0],result['popular_hastags'][1][0],result['popular_hastags'][2][0],
